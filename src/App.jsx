@@ -1,23 +1,38 @@
+import { Routes, Route } from "react-router-dom";
+
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Menu from "./components/Menu";
 import About from "./components/About";
 import Footer from "./components/Footer";
+import Checkout from "./components/Checkout";
+
+function HomePage() {
+  return (
+    <>
+      <Navbar />
+      <Hero />
+      <Menu />
+      <About />
+      <Footer />
+    </>
+  );
+}
 
 export default function App() {
   return (
-    <div>
+    <Routes>
 
-      <Navbar />
+      <Route
+        path="/"
+        element={<HomePage />}
+      />
 
-      <Hero />
+      <Route
+        path="/checkout"
+        element={<Checkout />}
+      />
 
-      <Menu />
-
-      <About />
-
-      <Footer />
-
-    </div>
+    </Routes>
   );
 }

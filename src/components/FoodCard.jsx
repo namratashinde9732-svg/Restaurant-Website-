@@ -1,4 +1,15 @@
+import { useNavigate } from "react-router-dom";
+
 export default function FoodCard({ item }) {
+
+  const navigate = useNavigate();
+
+  const handleOrder = () => {
+    navigate("/checkout", {
+      state: item,
+    });
+  };
+
   return (
     <div className="bg-white rounded-3xl overflow-hidden shadow-xl hover:scale-105 duration-300">
 
@@ -20,8 +31,11 @@ export default function FoodCard({ item }) {
             {item.price}
           </p>
 
-          <button className="bg-black text-white px-4 py-2 rounded-xl hover:bg-orange-500 duration-300">
-            Buy Now
+          <button
+            onClick={handleOrder}
+            className="bg-black text-white px-4 py-2 rounded-xl hover:bg-orange-500 duration-300"
+          >
+            Order Now
           </button>
 
         </div>
