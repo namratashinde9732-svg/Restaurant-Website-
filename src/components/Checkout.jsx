@@ -1,73 +1,117 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { FaCheckCircle } from "react-icons/fa";
+
+import {
+  FaCheckCircle,
+  FaMotorcycle,
+  FaArrowLeft,
+} from "react-icons/fa";
 
 export default function Checkout() {
 
   const location = useLocation();
+  const navigate = useNavigate();
+
   const food = location.state;
 
   const [quantity, setQuantity] = useState(1);
+
+  const [paymentMethod, setPaymentMethod] = useState("");
+
   const [orderPlaced, setOrderPlaced] = useState(false);
+
+  // Redirect if no food selected
+  if (!food) {
+    navigate("/");
+    return null;
+  }
 
   const price = Number(food.price.replace("₹", ""));
   const total = price * quantity;
 
   const handlePlaceOrder = () => {
+
+    if (!paymentMethod) {
+      alert("Please select payment method");
+      return;
+    }
+
     setOrderPlaced(true);
 
     setTimeout(() => {
-      setOrderPlaced(false);
+      navigate("/");
     }, 5000);
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 py-20 px-6">
+    <div className="min-h-screen bg-gradient-to-br from-orange-100 via-white to-yellow-100 py-10 px-4 md:px-8">
 
-      {/* Success Message */}
+      {/* Success Popup */}
       {orderPlaced && (
 
-        <div className="fixed top-10 right-10 bg-green-500 text-white px-8 py-5 rounded-2xl shadow-2xl flex items-center gap-4 z-50 animate-bounce">
+        <div className="fixed top-5 right-5 bg-green-500 text-white px-6 py-5 rounded-2xl shadow-2xl z-50 flex items-center gap-4 animate-bounce max-w-sm">
 
           <FaCheckCircle className="text-4xl" />
 
           <div>
-            <h1 className="text-2xl font-bold">
-              Order Successful!
+
+            <h1 className="text-xl font-bold">
+              Order Confirmed!
             </h1>
 
-            <p className="text-lg">
-              Your order has been placed and will be delivered soon.
+            <p className="text-sm md:text-base">
+              Your delicious food is on the way 🚀
             </p>
+
           </div>
 
         </div>
       )}
 
-      <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden grid md:grid-cols-2">
+      {/* Back Button */}
+      <button
+        onClick={() => navigate("/")}
+        className="flex items-center gap-3 bg-black text-white px-5 py-3 rounded-xl mb-8 hover:bg-gray-800 duration-300"
+      >
+
+        <FaArrowLeft />
+
+        Back To Menu
+
+      </button>
+
+      {/* Main Checkout Card */}
+      <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-2">
 
         {/* Food Image */}
-        <div>
+        <div className="h-[350px] lg:h-auto">
+
           <img
             src={food.image}
             alt={food.name}
             className="w-full h-full object-cover"
           />
+
         </div>
 
         {/* Details */}
-        <div className="p-10">
+        <div className="p-6 md:p-10">
 
-          <h1 className="text-5xl font-bold mb-5">
+          {/* Food Name */}
+          <h1 className="text-3xl md:text-5xl font-bold mb-4">
             {food.name}
           </h1>
 
-          <p className="text-gray-600 text-lg mb-6">
-            Delicious and freshly prepared food with premium ingredients.
+          {/* Description */}
+          <p className="text-gray-600 text-base md:text-lg leading-8 mb-8">
+
+            Enjoy premium quality food prepared with fresh ingredients,
+            rich flavors, and quick delivery service from FoodHub Restaurant.
+
           </p>
 
           {/* Price */}
-          <div className="mb-6">
+          <div className="mb-8">
 
             <h2 className="text-2xl font-bold mb-3">
               Price
@@ -80,7 +124,7 @@ export default function Checkout() {
           </div>
 
           {/* Quantity */}
-          <div className="mb-6">
+          <div className="mb-8">
 
             <h2 className="text-2xl font-bold mb-3">
               Quantity
@@ -90,8 +134,8 @@ export default function Checkout() {
               type="number"
               min="1"
               value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-              className="border-2 border-gray-300 px-4 py-2 rounded-xl w-28 text-xl"
+              onChange={(e) => setQuantity(Number(e.target.value))}
+              className="border-2 border-gray-300 px-4 py-3 rounded-xl w-32 text-xl focus:outline-none focus:border-orange-500"
             />
 
           </div>
@@ -109,30 +153,77 @@ export default function Checkout() {
 
           </div>
 
-          {/* Payment Methods */}
-          <div className="mb-8">
+          {/* Payment Options */}
+          <div className="mb-10">
 
-            <h2 className="text-2xl font-bold mb-4">
-              Payment Options
+            <h2 className="text-2xl font-bold mb-5">
+              Select Payment Method
             </h2>
 
             <div className="grid grid-cols-2 gap-4">
 
-              <button className="bg-purple-600 text-white py-3 rounded-xl text-lg font-semibold hover:scale-105 duration-300">
+              <button
+                onClick={() => setPaymentMethod("PhonePe")}
+                className={`py-4 rounded-2xl text-lg font-semibold duration-300 ${
+                  paymentMethod === "PhonePe"
+                    ? "bg-purple-700 text-white"
+                    : "bg-purple-200 hover:bg-purple-300"
+                }`}
+              >
                 PhonePe
               </button>
 
-              <button className="bg-blue-600 text-white py-3 rounded-xl text-lg font-semibold hover:scale-105 duration-300">
+              <button
+                onClick={() => setPaymentMethod("Google Pay")}
+                className={`py-4 rounded-2xl text-lg font-semibold duration-300 ${
+                  paymentMethod === "Google Pay"
+                    ? "bg-blue-700 text-white"
+                    : "bg-blue-200 hover:bg-blue-300"
+                }`}
+              >
                 Google Pay
               </button>
 
-              <button className="bg-sky-500 text-white py-3 rounded-xl text-lg font-semibold hover:scale-105 duration-300">
+              <button
+                onClick={() => setPaymentMethod("Paytm")}
+                className={`py-4 rounded-2xl text-lg font-semibold duration-300 ${
+                  paymentMethod === "Paytm"
+                    ? "bg-sky-700 text-white"
+                    : "bg-sky-200 hover:bg-sky-300"
+                }`}
+              >
                 Paytm
               </button>
 
-              <button className="bg-black text-white py-3 rounded-xl text-lg font-semibold hover:scale-105 duration-300">
-                Cash On Delivery
+              <button
+                onClick={() => setPaymentMethod("Cash On Delivery")}
+                className={`py-4 rounded-2xl text-lg font-semibold duration-300 ${
+                  paymentMethod === "Cash On Delivery"
+                    ? "bg-black text-white"
+                    : "bg-gray-300 hover:bg-gray-400"
+                }`}
+              >
+                COD
               </button>
+
+            </div>
+
+          </div>
+
+          {/* Delivery Info */}
+          <div className="flex items-center gap-4 bg-orange-100 p-5 rounded-2xl mb-10">
+
+            <FaMotorcycle className="text-4xl text-orange-500" />
+
+            <div>
+
+              <h2 className="text-xl font-bold">
+                Fast Delivery
+              </h2>
+
+              <p className="text-gray-600">
+                Estimated delivery in 25-30 minutes
+              </p>
 
             </div>
 
@@ -141,9 +232,11 @@ export default function Checkout() {
           {/* Place Order Button */}
           <button
             onClick={handlePlaceOrder}
-            className="w-full bg-orange-500 text-white py-4 rounded-2xl text-2xl font-bold hover:bg-orange-600 duration-300"
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-2xl text-xl md:text-2xl font-bold duration-300 shadow-xl hover:scale-105"
           >
+
             Place Order
+
           </button>
 
         </div>
